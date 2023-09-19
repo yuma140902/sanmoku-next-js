@@ -1,9 +1,7 @@
 "use client"
 import { useState } from "react"
 
-type Player = 'white' | 'black';
 type CellState = 'empty' | 'white' | 'black';
-
 type CellProps = {
   state: CellState
   handleClick: () => void
@@ -17,25 +15,31 @@ function Cell(props: CellProps) {
   )
 }
 
-function Board() {
-  const [player, setPlayer] = useState<Player>('white');
-  const [cells, setCells] = useState<CellState[]>(Array(9).fill('empty'));
+type Player = 'white' | 'black';
+type BoardProps = {
+  player: Player
+  setPlayer: (player: Player) => void
+  cells: CellState[]
+  setCell: (index: number, cell: CellState) => void
+}
+
+function Board(props: BoardProps) {
 
   function handleClick(index: number) {
-    if (cells[index] === 'empty') {
-      if (player === 'white') {
-        setCells(cells.map((old, i) => i == index ? 'white' : old));
-        setPlayer('black')
+    if (props.cells[index] === 'empty') {
+      if (props.player === 'white') {
+        props.setCell(index, 'white')
+        props.setPlayer('black')
       }
-      else if (player === 'black') {
-        setCells(cells.map((old, i) => i == index ? 'black' : old));
-        setPlayer('white')
+      else if (props.player === 'black') {
+        props.setCell(index, 'black')
+        props.setPlayer('white')
       }
     }
   }
 
   function createCell(index: number) {
-    return <Cell state={cells[index]} handleClick={() => handleClick(index)} />
+    return <Cell state={props.cells[index]} handleClick={() => handleClick(index)} />
   }
 
   return (
@@ -59,8 +63,18 @@ function Board() {
   )
 }
 
+function Game() {
+  const [player, setPlayer] = useState<Player>('white');
+  const [cells, setCells] = useState<CellState[]>(Array(9).fill('empty'));
+
+  return (
+    <Board player={player} setPlayer={setPlayer} cells={cells}
+      setCell={(index, cell) => setCells(cells.map((old, i) => i == index ? cell : old))} />
+  )
+}
+
 export default function Home() {
   return (
-    <Board />
+    <Game />
   )
 }
