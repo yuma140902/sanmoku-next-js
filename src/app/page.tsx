@@ -8,9 +8,16 @@ type CellProps = {
 }
 
 function Cell(props: CellProps) {
+  if (props.state === 'empty') {
+    return (
+      <button className="text-white aspect-square border w-24" onClick={props.handleClick}>
+        {props.state == 'empty' ? '(empty)' : props.state == 'white' ? '○' : '●'}
+      </button>
+    )
+  }
   return (
-    <button onClick={props.handleClick}>
-      {props.state == 'empty' ? 'empty ' : props.state == 'white' ? '○' : '●'}
+    <button className="aspect-square border w-24" onClick={props.handleClick}>
+      {props.state == 'white' ? '○' : '●'}
     </button>
   )
 }
@@ -123,16 +130,20 @@ function Game() {
   const result = judge(cells)
 
   return (
-    <div>
-      <h1>三目並べ</h1>
-      <Board player={player} setPlayer={setPlayer} cells={cells} finished={result.finished}
-        setCell={(index, cell) => setCells(cells.map((old, i) => i == index ? cell : old))} />
-      <p>
-        {`${player}の手番です`}
-      </p>
-      <p>
-        {getResultText(result)}
-      </p>
+    <div className="w-screen h-screen flex justify-center items-center">
+      <div>
+        <h1 className="text-3xl font-bold text-center">三目並べ</h1>
+        <div className="my-5">
+          <Board player={player} setPlayer={setPlayer} cells={cells} finished={result.finished}
+            setCell={(index, cell) => setCells(cells.map((old, i) => i == index ? cell : old))} />
+        </div>
+        <p>
+          {`${player}の手番です`}
+        </p>
+        <p>
+          {getResultText(result)}
+        </p>
+      </div>
     </div>
   )
 }
